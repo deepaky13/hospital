@@ -1,23 +1,18 @@
-import "express-async-errors";
 import * as dotenv from "dotenv";
 dotenv.config();
 import express from "express";
 const app = express();
-import morgan from "morgan";
+
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 
 // * ---------------------------Routers-----------------------------
 
 // * ---------------------------public-----------------------------
-
+import patientRouter from "./routes/patientRouter.js";
 import path from "path";
 
 // * -----------Dynamic storing of multimedia-------------------------
-
-if (process.env.NODE_ENV === "develop") {
-  app.use(morgan("dev"));
-}
 
 app.use(cookieParser());
 app.use(express.json());
@@ -28,11 +23,9 @@ app.get("/api/v1/test", (req, res) => {
   res.json({ msg: "test route" });
 });
 
-// * -----------------Building-Blocks---------------------------------
+app.use("/api/v1/patient", patientRouter);
 
-app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "./public", "index.html"));
-});
+// * -----------------Building-Blocks---------------------------------
 
 app.use("*", (req, res) => {
   res.status(404).json({ msg: "not found" });
